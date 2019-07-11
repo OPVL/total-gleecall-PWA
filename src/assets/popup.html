@@ -20,11 +20,11 @@
             const username = document.querySelector("#username").value;
             const password = document.querySelector("#password").value;
 
-            const res = await fetch(`/backend?username=${username}&password=${password}`, {
+            const res = await fetch(`/gleecall.api/backend?username=${username}&password=${password}`, {
                 mode: 'cors'
             });
             const json = await res.json();
-            window.opener.postMessage(json, "localhost");
+            window.opener.postMessage(json, "http://localhost");
             window.close();
 
             // fetch(`/backend?username=${username}&password=${password}`, {
