@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Popup</title>
+</head>
+
+<body>
+    <form id="login">
+        <input type="text" name="username" id="username">
+        <input type="password" name="password" id="password">
+        <button type="submit">Log in</button>
+    </form>
+    <script type="text/javascript">
+        const loginForm = document.querySelector('#login');
+
+        async function login(event) {
+            event.preventDefault();
+            const username = document.querySelector("#username").value;
+            const password = document.querySelector("#password").value;
+
+            const res = await fetch(`/backend?username=${username}&password=${password}`, {
+                mode: 'cors'
+            });
+            const json = await res.json();
+            window.opener.postMessage(json, "localhost");
+            window.close();
+
+            // fetch(`/backend?username=${username}&password=${password}`, {
+            //         mode: 'no-cors'
+            //     })
+            //     .then(function (response) {
+            //         console.log(response);
+            //     }).catch(function (error) {
+            //         console.log('Request failed', error)
+            //     });
+        };
+
+        loginForm.addEventListener('submit', (event) => {
+            login(event);
+        });
+
+        // window.opener.postMessage({
+        //     token: 'aaa',
+        //     secret: 'bbb'
+        // }, 'http://localhost:8080');
+    </script>
+
+</body>
+
+</html>

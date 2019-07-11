@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Total Gleecall</title>
+
+    <!-- WebApp Config Stuff-->
+    <meta name="theme-color" content="#00a3e0">
+    <link rel="manifest" href="/gleecall.api/assets/site.webmanifest">
+</head>
+
+<body>
+    <nav>Gleecall</nav>
+    <button onclick="">X</button>
+    <div id="app-shell">
+        <div id="screens">
+            <div id="screen-search" class="screen"></div>
+            <div id="screen-entity" class="screen"></div>
+        </div>
+    </div>
+    <script>
+        window.open("/gleecall.api/assets/popup.html", "mywindow", "width=350,height=250");
+        // Create IE + others compatible event handler
+        var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+        var eventer = window[eventMethod];
+        var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+        // Listen to message from child window
+        eventer(messageEvent, function (e) {
+            console.log('origin: ', e.origin)
+
+            // Check if origin is proper
+            if (e.origin != 'localhost') {
+                return
+            }
+            console.log('parent received message!: ', e.data);
+        }, false);
+    </script>
+</body>
+
+</html>
