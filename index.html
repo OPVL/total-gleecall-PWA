@@ -11,138 +11,158 @@
     <meta name="theme-color" content="#00a3e0">
     <link rel="manifest" href="/gleecall.api/assets/site.webmanifest">
     <style>
-            /* app shell CSS */
-            :root {
-                --gray: #ececec;
-                --whitesmoke: #f5f5f5;
-                --dark: #222;
+        /* app shell CSS */
+        :root {
+            --gray: #ececec;
+            --whitesmoke: #f5f5f5;
+            --dark: #222;
+        }
+
+        body {
+            margin: 0;
+            background-color: var(--whitesmoke);
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
+                "Helvetica Neue", sans-serif;
+        }
+
+        #navbar {
+            height: 70px;
+            background-color: white;
+            box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        #screens {
+            display: flex;
+            width: 100vw;
+            overflow-x: scroll;
+            scroll-snap-type: x mandatory;
+        }
+
+        .screen {
+            flex: 0 0 100vw;
+            min-height: calc(100vh - 70px);
+            scroll-snap-align: start;
+        }
+
+        .spinner-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+
+        .spinner {
+            animation: rotator 1.4s linear infinite;
+        }
+
+        @keyframes rotator {
+            0% {
+                transform: rotate(0deg);
             }
-    
-            body {
-                margin: 0;
-                background-color: var(--whitesmoke);
-                font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-                    Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
-                    "Helvetica Neue", sans-serif;
+
+            100% {
+                transform: rotate(270deg);
             }
-    
-            #navbar {
-                height: 70px;
-                background-color: white;
-                box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: var(--dark);
-                font-size: 22px;
-                font-weight: 600;
+        }
+
+        .path {
+            stroke-dasharray: 187;
+            stroke-dashoffset: 0;
+            transform-origin: center;
+            animation: dash 1.4s ease-in-out infinite,
+                colors 5.6s ease-in-out infinite;
+        }
+
+        .card {
+            background-color: white;
+            padding: 40px;
+            margin: 30px;
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes colors {
+            0% {
+                stroke: #4285f4;
             }
-    
-            #screens {
-                display: flex;
-                width: 100vw;
-                overflow-x: scroll;
-                scroll-snap-type: x mandatory;
+
+            25% {
+                stroke: #de3e35;
             }
-    
-            .screen {
-                flex: 0 0 100vw;
-                min-height: calc(100vh - 70px);
-                scroll-snap-align: start;
+
+            50% {
+                stroke: #f7c223;
             }
-    
-            .spinner-container {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                height: 100%;
+
+            75% {
+                stroke: #1b9a59;
             }
-    
-            .spinner {
-                animation: rotator 1.4s linear infinite;
+
+            100% {
+                stroke: #4285f4;
             }
-    
-            @keyframes rotator {
-                0% {
-                    transform: rotate(0deg);
-                }
-    
-                100% {
-                    transform: rotate(270deg);
-                }
+        }
+
+        @keyframes dash {
+            0% {
+                stroke-dashoffset: 187;
             }
-    
-            .path {
-                stroke-dasharray: 187;
-                stroke-dashoffset: 0;
-                transform-origin: center;
-                animation: dash 1.4s ease-in-out infinite,
-                    colors 5.6s ease-in-out infinite;
+
+            50% {
+                stroke-dashoffset: 46.75;
+                transform: rotate(135deg);
             }
-    
-            .card {
-                background-color: white;
-                padding: 40px;
-                margin: 30px;
-                text-align: center;
-                border: 1px solid rgba(0, 0, 0, 0.1);
+
+            100% {
+                stroke-dashoffset: 187;
+                transform: rotate(450deg);
             }
-    
-            @keyframes colors {
-                0% {
-                    stroke: #4285f4;
-                }
-    
-                25% {
-                    stroke: #de3e35;
-                }
-    
-                50% {
-                    stroke: #f7c223;
-                }
-    
-                75% {
-                    stroke: #1b9a59;
-                }
-    
-                100% {
-                    stroke: #4285f4;
-                }
-            }
-    
-            @keyframes dash {
-                0% {
-                    stroke-dashoffset: 187;
-                }
-    
-                50% {
-                    stroke-dashoffset: 46.75;
-                    transform: rotate(135deg);
-                }
-    
-                100% {
-                    stroke-dashoffset: 187;
-                    transform: rotate(450deg);
-                }
-            }
-    
-            #a2hs {
-                position: absolute;
-                top: 0;
-                right: 0;
-                font-size: 20px;
-                padding: 20px;
-                display: none;
-            }
-        </style>
+        }
+
+        #a2hs {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 20px;
+            padding: 20px;
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
     <nav id="navbar">Gleecall</nav>
+    <div id="a2hs">+</div>
+    <form id="searchBox" action="">
+        <input type="text" name="searchTerm" id="searchTerm">
+    </form>
     <div id="app-shell">
         <div id="screens">
-            <div id="screen-search" class="screen"></div>
-            <div id="screen-entity" class="screen"></div>
+            <div id="screen-search" class="screen">
+                <div class="spinner-container">
+                    <svg class="spinner" width="40px" height="40px" viewBox="0 0 66 66"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30">
+                        </circle>
+                    </svg>
+                </div>
+            </div>
+            <div id="screen-entity" class="screen">
+                <div class="spinner-container">
+                    <svg class="spinner" width="40px" height="40px" viewBox="0 0 66 66"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30">
+                        </circle>
+                    </svg>
+                </div>
+            </div>
         </div>
     </div>
     <script>
@@ -162,17 +182,18 @@
             }
             return null;
         }
+
         function setCookie(cookie, value, max_age, path = '/') {
             console.log('setting ' + cookie + ' to ' + value);
             document.cookie = cookie + '=' + value + '; max-age=' + max_age + '; path=' + path;
         }
         /* Initialise our tokens and check validity */
-        let tokens = [getCookie('refresh_token'),getCookie('BhRestToken'), getCookie('restUrl')];
+        let tokens = [getCookie('refresh_token'), getCookie('BhRestToken'), getCookie('restUrl')];
         console.log('init: ' + tokens);
         if (!tokens[0])
             login();
 
-        if (!tokens[1]){
+        if (!tokens[1]) {
             console.log('RestToken invalid refreshing');
             refresh(tokens[0]);
         }
@@ -199,6 +220,53 @@
                 console.log('parent received message!: ', e.data);
             }, false);
         }
+
+        const debounce = (func, wait, immediate) => {
+            var timeout;
+            return (...args) => {
+                const later = () => {
+                    timeout = null;
+                    if (!immediate) func.apply(this, args);
+                };
+                const callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(this, args);
+            };
+        };
+        const screens = document.querySelector("#screens");
+        const navbar = document.querySelector("#navbar");
+        const tester = document.querySelector('#tester');
+
+        const pageNames = ["Search", "Rewards"];
+
+        const pageTransition = debounce(() => {
+            if (Math.round(screens.scrollLeft / window.innerWidth) < 1)
+                navbar.textContent = pageNames[0];
+        }, 60);
+
+        // const swoop = () => {
+        //     screens.scroll(1000, 0);
+        //     console.log('scrolling')
+        // }
+
+        let deferredPrompt;
+        const button = document.querySelector('#a2hs');
+        window.addEventListener('beforeinstallprompt', event => {
+            event.preventDefault();
+            deferredPrompt = event;
+            button.style.display = "block";
+        });
+        button.addEventListener('click', () => {
+            button.style.display = "none";
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then(result => {
+                console.log(result.outcome);
+                deferredPrompt = null;
+            });
+        });
+        screens.addEventListener("scroll", pageTransition);
+        // tester.addEventListener('click', swoop);
     </script>
 </body>
 
