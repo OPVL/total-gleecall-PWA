@@ -21,6 +21,7 @@ module.exports = env => {
         output: {
             filename: "[name].[chunkhash].js",
             chunkFilename: "[name].[chunkhash].bundle.js",
+            // eslint-disable-next-line no-undef
             path: path.resolve(__dirname, "dist")
         },
         plugins: [

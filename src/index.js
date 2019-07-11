@@ -15,7 +15,7 @@ searchForm.addEventListener('submit', (event) => {
 });
 
 function createGroups(collection) {
-    html = "";
+    let html = "";
     collection.forEach(group => {
         console.log(group);
         if (group.entities.length > 0) {
@@ -89,6 +89,7 @@ function search(event) {
 
     console.log(term);
 
+    // eslint-disable-next-line no-undef
     fetch(`${tokens[2]}find?query=${term}&BhRestToken=${tokens[1]}`)
         .then(response => response.json())
         .then(json => {
@@ -97,7 +98,7 @@ function search(event) {
                 searchScreen.innerHTML = noResults;
                 return;
             }
-            searchScreen.innerHTML = handleResults(json.data);;
+            searchScreen.innerHTML = handleResults(json.data);
             
 
             json.data.forEach(entity => {
@@ -127,6 +128,8 @@ const noResults = `<strong>No Results Found</strong>`;
 
 function showDetails(entity) {
     const fields = '*';
+    
+    // eslint-disable-next-line no-undef
     fetch(`${tokens[2]}entity/${entity.entityType}/${entity.entityId}?fields=${fields}&BhRestToken=${tokens[1]}`)
         .then(response => response.json())
         .then(json => {
