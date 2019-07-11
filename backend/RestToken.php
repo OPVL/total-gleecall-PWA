@@ -46,7 +46,8 @@ class RestToken
         if ($justToken)
             return json_encode("{ 'token':'" . $response['BhRestToken'] . "' }");
 
-        $response = array_merge($response, $access);
+        // print_r($access);
+        $response['refresh_token'] = $access['refresh_token'];
 
         return $response;
     }

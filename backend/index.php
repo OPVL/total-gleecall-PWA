@@ -20,29 +20,29 @@ if (isset($_GET['username']) && isset($_GET['password'])) {
     }
 
     header('Content-Type: application/json');
-echo json_encode($tokens);
+    echo json_encode($tokens);
 
     // die($tokens);
-    setcookie("BhRestToken", $tokens['BhRestToken'], time() + $tokens['expires_in'], '/');
+    setcookie("BhRestToken", $tokens['BhRestToken'], time() + 600, '/');
     setcookie("refresh_token", $tokens['refresh_token'], time() + 60 * 60 * 24 * 30, '/');
     setcookie("restUrl", $tokens['restUrl'], time() + 60 * 60 * 24 * 30, '/');
 
     // header("Location: /gleesons/" . ($_POST['origin'] . $_POST['term']) ?? 'dashboard');
 }
 
-// if (isset($_GET['refresh'])) {
-//     $tokens = RestToken::refresh(false, $_GET['refresh'] ?? $_COOKIE['refresh_token']);
+if (isset($_GET['refresh'])) {
+    $tokens = RestToken::refresh(false, $_GET['refresh'] ?? $_COOKIE['refresh_token']);
 
-//     if (!$tokens['BhRestToken']) {
-//         setcookie("BhRestToken", "", 0, '/');
-//         setcookie("refresh_token", "", 0, '/');
-//         die('invalid');
-//         return json_encode(tokens);
-//     }
+    if (!$tokens['BhRestToken']) {
+        setcookie("BhRestToken", "", 0, '/');
+        setcookie("refresh_token", "", 0, '/');
+        die('invalid');
+        return json_encode(tokens);
+    }
 
-//     setcookie("BhRestToken", $tokens['BhRestToken'], time() + $tokens['expires_in'], '/');
-//     setcookie("refresh_token", $tokens['refresh_token'], time() + 60 * 60 * 24 * 30, '/');
-//     setcookie("restUrl", $tokens['restUrl'], time() + 60 * 60 * 24 * 30, '/');
+    setcookie("BhRestToken", $tokens['BhRestToken'], time() + $tokens['expires_in'], '/');
+    setcookie("refresh_token", $tokens['refresh_token'], time() + 60 * 60 * 24 * 30, '/');
+    setcookie("restUrl", $tokens['restUrl'], time() + 60 * 60 * 24 * 30, '/');
 
-//     die(json_encode($tokens));
-// }
+    die(json_encode($tokens));
+}

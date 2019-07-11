@@ -37,7 +37,11 @@ module.exports = env => {
                 from: "src/assets/",
                 to: "assets/",
                 ignore: [".DS_Store"]
-            }]),
+            }],
+            [{
+                from: "popup.html",
+                to: "assets/popup.html",
+            }]),            
             new WorkboxPlugin.InjectManifest({
                 swSrc: "./src-sw.js",
                 swDest: "sw.js"

@@ -10,11 +10,135 @@
     <!-- WebApp Config Stuff-->
     <meta name="theme-color" content="#00a3e0">
     <link rel="manifest" href="/gleecall.api/assets/site.webmanifest">
+    <style>
+            /* app shell CSS */
+            :root {
+                --gray: #ececec;
+                --whitesmoke: #f5f5f5;
+                --dark: #222;
+            }
+    
+            body {
+                margin: 0;
+                background-color: var(--whitesmoke);
+                font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans",
+                    "Helvetica Neue", sans-serif;
+            }
+    
+            #navbar {
+                height: 70px;
+                background-color: white;
+                box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--dark);
+                font-size: 22px;
+                font-weight: 600;
+            }
+    
+            #screens {
+                display: flex;
+                width: 100vw;
+                overflow-x: scroll;
+                scroll-snap-type: x mandatory;
+            }
+    
+            .screen {
+                flex: 0 0 100vw;
+                min-height: calc(100vh - 70px);
+                scroll-snap-align: start;
+            }
+    
+            .spinner-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+            }
+    
+            .spinner {
+                animation: rotator 1.4s linear infinite;
+            }
+    
+            @keyframes rotator {
+                0% {
+                    transform: rotate(0deg);
+                }
+    
+                100% {
+                    transform: rotate(270deg);
+                }
+            }
+    
+            .path {
+                stroke-dasharray: 187;
+                stroke-dashoffset: 0;
+                transform-origin: center;
+                animation: dash 1.4s ease-in-out infinite,
+                    colors 5.6s ease-in-out infinite;
+            }
+    
+            .card {
+                background-color: white;
+                padding: 40px;
+                margin: 30px;
+                text-align: center;
+                border: 1px solid rgba(0, 0, 0, 0.1);
+            }
+    
+            @keyframes colors {
+                0% {
+                    stroke: #4285f4;
+                }
+    
+                25% {
+                    stroke: #de3e35;
+                }
+    
+                50% {
+                    stroke: #f7c223;
+                }
+    
+                75% {
+                    stroke: #1b9a59;
+                }
+    
+                100% {
+                    stroke: #4285f4;
+                }
+            }
+    
+            @keyframes dash {
+                0% {
+                    stroke-dashoffset: 187;
+                }
+    
+                50% {
+                    stroke-dashoffset: 46.75;
+                    transform: rotate(135deg);
+                }
+    
+                100% {
+                    stroke-dashoffset: 187;
+                    transform: rotate(450deg);
+                }
+            }
+    
+            #a2hs {
+                position: absolute;
+                top: 0;
+                right: 0;
+                font-size: 20px;
+                padding: 20px;
+                display: none;
+            }
+        </style>
 </head>
 
 <body>
-    <nav>Gleecall</nav>
-    <button onclick="">X</button>
+    <nav id="navbar">Gleecall</nav>
     <div id="app-shell">
         <div id="screens">
             <div id="screen-search" class="screen"></div>
@@ -22,21 +146,59 @@
         </div>
     </div>
     <script>
-        window.open("/gleecall.api/assets/popup.html", "mywindow", "width=350,height=250");
-        // Create IE + others compatible event handler
-        var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
-        var eventer = window[eventMethod];
-        var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
-        // Listen to message from child window
-        eventer(messageEvent, function (e) {
-            console.log('origin: ', e.origin)
-
-            // Check if origin is proper
-            if (e.origin != 'http://localhost') {
-                return
+        /* Helper Cookie Methods */
+        function getCookie(cname) {
+            var name = cname + "=";
+            var decodedCookie = decodeURIComponent(document.cookie);
+            var ca = decodedCookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
             }
-            console.log('parent received message!: ', e.data);
-        }, false);
+            return null;
+        }
+        function setCookie(cookie, value, max_age, path = '/') {
+            console.log('setting ' + cookie + ' to ' + value);
+            document.cookie = cookie + '=' + value + '; max-age=' + max_age + '; path=' + path;
+        }
+        /* Initialise our tokens and check validity */
+        let tokens = [getCookie('refresh_token'),getCookie('BhRestToken'), getCookie('restUrl')];
+        console.log('init: ' + tokens);
+        if (!tokens[0])
+            login();
+
+        if (!tokens[1]){
+            console.log('RestToken invalid refreshing');
+            refresh(tokens[0]);
+        }
+
+        async function refresh(refreshToken) {
+            const egg = await fetch('/gleecall.api/backend?refresh=' + refreshToken);
+            return egg;
+        }
+
+        function login() {
+            window.open("/gleecall.api/assets/popup.html", "mywindow", "width=350,height=250");
+            // Create IE + others compatible event handler
+            var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+            var eventer = window[eventMethod];
+            var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+            // Listen to message from child window
+            eventer(messageEvent, function (e) {
+                console.log('origin: ', e.origin)
+
+                // Check if origin is proper
+                if (e.origin != 'http://localhost') {
+                    return
+                }
+                console.log('parent received message!: ', e.data);
+            }, false);
+        }
     </script>
 </body>
 
