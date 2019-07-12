@@ -37,7 +37,8 @@
             font-size: 22px;
             font-weight: 600;
         }
-        #app-shell{
+
+        #app-shell {
             width: 99vw;
         }
 
@@ -54,10 +55,15 @@
             height: calc(100vh - 70px);
             scroll-snap-align: start;
             overflow-y: auto;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        @media only screen and (max-width: 1000px){
-            .screen{
+        @media only screen and (max-width: 1000px) {
+            .screen {
                 flex: 0 0 98vw;
             }
         }
@@ -145,7 +151,8 @@
             padding: 20px;
             display: none;
         }
-        #searchBox{
+
+        #searchBox {
             position: absolute;
             top: 50px;
             left: 50%;
@@ -159,28 +166,18 @@
 <body>
     <nav id="navbar">Gleecall</nav>
     <div id="a2hs">+</div>
-    <form id="searchBox" action="">
-        <input type="text" name="searchTerm" id="searchTerm">
-    </form>
+    <div id="searchWrapper">
+        <form id="searchBox">
+            <input type="text" name="searchTerm" id="searchTerm">
+        </form>
+    </div>
     <div id="app-shell">
         <div id="screens">
             <div id="screen-search" class="screen">
-                <div class="spinner-container">
-                    <svg class="spinner" width="40px" height="40px" viewBox="0 0 66 66"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30">
-                        </circle>
-                    </svg>
-                </div>
+                <h4>Do a search to get some results</h4>
             </div>
             <div id="screen-entity" class="screen">
-                <div class="spinner-container">
-                    <svg class="spinner" width="40px" height="40px" viewBox="0 0 66 66"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30">
-                        </circle>
-                    </svg>
-                </div>
+                <h4>Select an Entity to view Details</h4>
             </div>
         </div>
     </div>

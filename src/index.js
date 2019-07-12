@@ -94,9 +94,9 @@ function auth() {
 function search(event) {
     event.preventDefault();
     const term = document.querySelector('#searchTerm').value;
-    const searchScreen = document.querySelector('#screen-search');
-    searchScreen.innerHTML = loadingSpinner;
-
+    const searchPane = document.querySelector('#screen-search');
+    searchPane.innerHTML = loadingSpinner;
+    scrollToPanel(searchPane);
     console.log(term);
 
     // eslint-disable-next-line no-undef
@@ -105,10 +105,10 @@ function search(event) {
         .then(json => {
             console.log(json.data);
             if (json.data.length < 1) {
-                searchScreen.innerHTML = noResults;
+                searchPane.innerHTML = noResults;
                 return;
             }
-            searchScreen.innerHTML = handleResults(json.data);
+            searchPane.innerHTML = handleResults(json.data);
 
 
             json.data.forEach(entity => {
@@ -122,7 +122,7 @@ function search(event) {
             // json.data.forEach(entity => {
             //     html += `<div class="card">${entity.title}</div>`;
             // });
-            // searchScreen.innerHTML = html;
+            // searchPane.innerHTML = html;
         });
 }
 
@@ -138,11 +138,21 @@ const noResults = `<strong>No Results Found</strong>`;
 
 function showDetails(entity) {
     const fields = '*';
+    const detailsPane = document.querySelector('#screen-entity');
+    detailsPane.innerHTML = loadingSpinner;
+    scrollToPanel(detailsPane);
 
     // eslint-disable-next-line no-undef
     fetch(`${tokens[2]}entity/${entity.entityType}/${entity.entityId}?fields=${fields}&BhRestToken=${tokens[1]}`)
         .then(response => response.json())
         .then(json => {
             console.log(json.data);
+            detailsPane.innerHTML = `<h2>${json.data.name}`;
         });
+}
+
+function scrollToPanel(panel){
+    const left = panel.offsetLeft;
+    // eslint-disable-next-line no-undef
+    screens.scroll(left, 0);
 }
