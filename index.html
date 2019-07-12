@@ -37,18 +37,29 @@
             font-size: 22px;
             font-weight: 600;
         }
+        #app-shell{
+            width: 99vw;
+        }
 
         #screens {
             display: flex;
-            width: 100vw;
+            width: 98vw;
+            margin: auto;
             overflow-x: scroll;
             scroll-snap-type: x mandatory;
         }
 
         .screen {
-            flex: 0 0 100vw;
-            min-height: calc(100vh - 70px);
+            flex: 0 0 49vw;
+            height: calc(100vh - 70px);
             scroll-snap-align: start;
+            overflow-y: auto;
+        }
+
+        @media only screen and (max-width: 1000px){
+            .screen{
+                flex: 0 0 98vw;
+            }
         }
 
         .spinner-container {
@@ -134,6 +145,14 @@
             padding: 20px;
             display: none;
         }
+        #searchBox{
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            font-size: 20px;
+            padding: 20px;
+            transform: translate(-50%, 0%);
+        }
     </style>
 </head>
 
@@ -200,11 +219,12 @@
 
         async function refresh(refreshToken) {
             const egg = await fetch('/gleecall.api/backend?refresh=' + refreshToken);
+            console.log(egg.json());
             return egg;
         }
 
         function login() {
-            window.open("/gleecall.api/assets/popup.html", "mywindow", "width=350,height=250");
+            window.open("/gleecall.api/assets/popup.html", "mywindow", "width=350,height=400");
             // Create IE + others compatible event handler
             var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
             var eventer = window[eventMethod];
@@ -218,32 +238,33 @@
                     return
                 }
                 console.log('parent received message!: ', e.data);
+                location.reload();
             }, false);
         }
 
-        const debounce = (func, wait, immediate) => {
-            var timeout;
-            return (...args) => {
-                const later = () => {
-                    timeout = null;
-                    if (!immediate) func.apply(this, args);
-                };
-                const callNow = immediate && !timeout;
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-                if (callNow) func.apply(this, args);
-            };
-        };
-        const screens = document.querySelector("#screens");
-        const navbar = document.querySelector("#navbar");
-        const tester = document.querySelector('#tester');
+        // const debounce = (func, wait, immediate) => {
+        //     var timeout;
+        //     return (...args) => {
+        //         const later = () => {
+        //             timeout = null;
+        //             if (!immediate) func.apply(this, args);
+        //         };
+        //         const callNow = immediate && !timeout;
+        //         clearTimeout(timeout);
+        //         timeout = setTimeout(later, wait);
+        //         if (callNow) func.apply(this, args);
+        //     };
+        // };
+        // const screens = document.querySelector("#screens");
+        // const navbar = document.querySelector("#navbar");
+        // const tester = document.querySelector('#tester');
 
-        const pageNames = ["Search", "Rewards"];
+        // const pageNames = ["Search", "Rewards"];
 
-        const pageTransition = debounce(() => {
-            if (Math.round(screens.scrollLeft / window.innerWidth) < 1)
-                navbar.textContent = pageNames[0];
-        }, 60);
+        // const pageTransition = debounce(() => {
+        //     if (Math.round(screens.scrollLeft / window.innerWidth) < 1)
+        //         navbar.textContent = pageNames[0];
+        // }, 60);
 
         // const swoop = () => {
         //     screens.scroll(1000, 0);
@@ -265,7 +286,7 @@
                 deferredPrompt = null;
             });
         });
-        screens.addEventListener("scroll", pageTransition);
+        // screens.addEventListener("scroll", pageTransition);
         // tester.addEventListener('click', swoop);
     </script>
 </body>

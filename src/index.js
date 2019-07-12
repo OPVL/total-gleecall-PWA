@@ -81,6 +81,16 @@ function handleResults(data) {
     return createGroups(sorted);
 }
 
+function auth() {
+    return {
+        // mode: 'cors',
+        headers: new Headers({
+            // eslint-disable-next-line no-undef
+            Authorization: `Bearer ${tokens[1]}`
+        })
+    }
+}
+
 function search(event) {
     event.preventDefault();
     const term = document.querySelector('#searchTerm').value;
@@ -99,7 +109,7 @@ function search(event) {
                 return;
             }
             searchScreen.innerHTML = handleResults(json.data);
-            
+
 
             json.data.forEach(entity => {
                 const elem = document.querySelector(`#E${entity.entityId}`);
@@ -122,17 +132,17 @@ const loadingSpinner = `
     <circle class="path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30">
     </circle>
     </svg>
-</div>'`;
+</div>`;
 
 const noResults = `<strong>No Results Found</strong>`;
 
 function showDetails(entity) {
     const fields = '*';
-    
+
     // eslint-disable-next-line no-undef
     fetch(`${tokens[2]}entity/${entity.entityType}/${entity.entityId}?fields=${fields}&BhRestToken=${tokens[1]}`)
         .then(response => response.json())
         .then(json => {
-            console.log(JSON.stringify(json.data));
+            console.log(json.data);
         });
 }
