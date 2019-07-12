@@ -15,18 +15,19 @@ searchForm.addEventListener('submit', (event) => {
 });
 
 function createGroups(collection) {
-    let html = "";
+    let html = '<div id="results">';
     collection.forEach(group => {
         console.log(group);
         if (group.entities.length > 0) {
 
-            html += '<div class="card"><strong>' + group.niceName + '</strong><br>';
+            html += `<button class="collapsible">${group.niceName}</button><div class="content" style="display: none">`;
             group.entities.forEach(entity => {
                 html += `<button href="#${entity.entityId}" id="E${entity.entityId}">${entity.title}</button><br>`;
             });
             html += '</div>';
         }
     });
+    html += '</div>';
     return html;
 }
 
@@ -118,6 +119,20 @@ function search(event) {
                     showDetails(entity);
                 }, false);
             });
+            const coll = document.getElementsByClassName("collapsible");
+            coll[0].children.length
+            for (let i = 0; i < coll.length; i++) {
+                coll[i].addEventListener("click", function () {
+                    this.classList.toggle("active");
+                    const content = this.nextElementSibling;
+                    content.style.display = content.style.display == 'none' ? 'block' : 'none';
+                    // if (content.style.height) {
+                    //     content.style.height = null;
+                    // } else {
+                    //     content.style.height = (content.children.length * 117) + "px";
+                    // }
+                });
+            }
             // let html = "";
             // json.data.forEach(entity => {
             //     html += `<div class="card">${entity.title}</div>`;
@@ -151,7 +166,7 @@ function showDetails(entity) {
         });
 }
 
-function scrollToPanel(panel){
+function scrollToPanel(panel) {
     const left = panel.offsetLeft;
     // eslint-disable-next-line no-undef
     screens.scroll(left, 0);
