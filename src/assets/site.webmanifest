@@ -1,5 +1,5 @@
 {
-    "name": "Gleecall",
+    "name": "Total Gleecall",
     "short_name": "Gleecall",
     "icons": [
         {
@@ -8,15 +8,14 @@
             "type": "image/png"
         },
         {
-            "src": "/gleecall.api/assets/android-chrome-384x384.png",
-            "sizes": "384x384",
+            "src": "/gleecall.api/assets/android-chrome-512x512.png",
+            "sizes": "512x512",
             "type": "image/png"
         }
     ],
-    "start_url": "http://localhost/gleecall.api/dist/?utm_source=a2hs",
-    "theme_color": "#00a3e0",
-    "background_color": "#00a3e0",
+    "theme_color": "#c9dfee",
+    "background_color": "#c9dfee",
+    "start_url": "http://localhost/gleecall.api/dist/",
     "display": "standalone",
     "orientation": "portrait"
-
 }

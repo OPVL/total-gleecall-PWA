@@ -14,8 +14,8 @@ searchForm.addEventListener('submit', (event) => {
     search(event);
 });
 
-function createGroups(collection) {
-    let html = '<div id="results">';
+function createGroups(collection, total) {
+    let html = `<div id="results"><div id="resultsCount">Returned ${total} results</div>`;
     collection.forEach(group => {
         console.log(group);
         if (group.entities.length > 0) {
@@ -79,7 +79,7 @@ function handleResults(data) {
         }
     }
 
-    return createGroups(sorted);
+    return createGroups(sorted, data.length);
 }
 
 function auth() {
@@ -151,18 +151,74 @@ const loadingSpinner = `
 
 const noResults = `<strong>No Results Found</strong>`;
 
-function showDetails(entity) {
+function showDetails(findEntity) {
     const fields = '*';
     const detailsPane = document.querySelector('#screen-entity');
     detailsPane.innerHTML = loadingSpinner;
     scrollToPanel(detailsPane);
 
     // eslint-disable-next-line no-undef
-    fetch(`${tokens[2]}entity/${entity.entityType}/${entity.entityId}?fields=${fields}&BhRestToken=${tokens[1]}`)
+    fetch(`${tokens[2]}entity/${findEntity.entityType}/${findEntity.entityId}?fields=${fields}&BhRestToken=${tokens[1]}`)
         .then(response => response.json())
         .then(json => {
-            console.log(json.data);
-            detailsPane.innerHTML = `<h2>${json.data.name}`;
+            const entity = json.data;
+            console.log(entity);
+            detailsPane.innerHTML = `<div id="innerDetails">
+                <div class="entityTitle">
+                    <h2>${entity.name}</h3>
+                    <p>${findEntity.entityType}</p>
+                </div>
+                <div id="notesOuter">
+                </div>
+            </div>`;
+
+            // eslint-disable-next-line no-undef
+            fetch(`${tokens[2]}query/NoteEntity?where=targetEntityID=${entity.id}&fields=note&BhRestToken=${tokens[1]}`)
+                .then(response => response.json())
+                .then(json => {
+                    console.log(json.data);
+                    const notesArea = document.querySelector('#notesOuter');
+                    notesArea.innerHTML += '<h3 id="notesTitle">Notes</h3><div id="notesInner"></div>';
+                    const notesInner = document.querySelector('#notesInner');
+
+                    if (json.data.length > 0) {
+                        json.data.forEach(note => {
+                            // eslint-disable-next-line no-undef
+                            fetch(`${tokens[2]}entity/Note/${note.note.id}?fields=*&BhRestToken=${tokens[1]}`)
+                                .then(response => response.json())
+                                .then(json => {
+                                    const noteData = json.data;
+
+                                    /* FORMATTING */
+                                    let created = new Date(noteData.dateAdded);
+                                    created = created.toJSON().slice(0, 10).split('/').reverse().join('-');
+
+                                    notesInner.innerHTML += `
+                                <div class="note collapsedNote">
+                                    <div class="noteHeader">
+                                        <p>${noteData.action}</p>
+                                        <p>${created}</p>
+                                    </div>
+                                    <div class="noteBody">
+                                        ${noteData.comments}
+                                    </div>
+                                </div>`
+                                    console.log(noteData);
+                                })
+                        });
+                    }
+                    else{
+                        notesInner.innerHTML = '<p>No notes on entity, why not create one?</p>';
+                    }
+                })
+            // detailsPane.innerHTML += '<div id="backButton">back</div>';
+            // const backButton = document.querySelector('#backButton');
+
+            // backButton.addEventListener('click', (event) => {
+            //     console.log(event);
+            //     scrollToPanel(document.querySelector('#screen-search'));
+            //     this.parentNode.removeChild(this);
+            // })
         });
 }
 

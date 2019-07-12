@@ -113,14 +113,6 @@
                 colors 5.6s ease-in-out infinite;
         }
 
-        .card {
-            background-color: white;
-            padding: 40px;
-            margin: 30px;
-            text-align: center;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-        }
-
         @keyframes colors {
             0% {
                 stroke: #4285f4;
@@ -198,7 +190,7 @@
             });
             const json = await res.json();
             window.opener.postMessage(json, "http://localhost");
-            screen.innerHTML = '<h2>Success!</h2><p style="font-size: 10px; color: #ddd;">This window will automatically close itself.</p>';
+            screen.innerHTML = '<h2>Success!</h2><p style="font-size: 10px; color: #ccc;">This window will automatically close itself.</p>';
             setTimeout(window.close, 1000);
 
         };

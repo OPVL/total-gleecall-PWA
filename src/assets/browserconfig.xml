@@ -2,8 +2,9 @@
 <browserconfig>
     <msapplication>
         <tile>
-            <square150x150logo src="/meta/mstile-150x150.png"/>
-            <TileColor>#00a3e0</TileColor>
+            <square150x150logo src="/gleecall.api/assets/mstile-150x150.png"/>
+            <square310x310logo src="/gleecall.api/assets/mstile-310x310.png"/>
+            <TileColor>#c9dfee</TileColor>
         </tile>
     </msapplication>
 </browserconfig>
