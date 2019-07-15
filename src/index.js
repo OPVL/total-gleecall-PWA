@@ -158,6 +158,11 @@ function showDetails(findEntity) {
     scrollToPanel(detailsPane);
 
     // eslint-disable-next-line no-undef
+    getDetails(findEntity, fields, detailsPane);
+}
+
+function getDetails(findEntity, fields, detailsPane) {
+    // eslint-disable-next-line no-undef
     fetch(`${tokens[2]}entity/${findEntity.entityType}/${findEntity.entityId}?fields=${fields}&BhRestToken=${tokens[1]}`)
         .then(response => response.json())
         .then(json => {
@@ -172,58 +177,98 @@ function showDetails(findEntity) {
                 </div>
             </div>`;
 
-            // eslint-disable-next-line no-undef
-            fetch(`${tokens[2]}query/NoteEntity?where=targetEntityID=${entity.id}&fields=note&BhRestToken=${tokens[1]}`)
-                .then(response => response.json())
-                .then(json => {
-                    console.log(json.data);
-                    const notesArea = document.querySelector('#notesOuter');
-                    notesArea.innerHTML += '<h3 id="notesTitle">Notes</h3><div id="notesInner"></div>';
-                    const notesInner = document.querySelector('#notesInner');
-
-                    if (json.data.length > 0) {
-                        json.data.forEach(note => {
-                            // eslint-disable-next-line no-undef
-                            fetch(`${tokens[2]}entity/Note/${note.note.id}?fields=*&BhRestToken=${tokens[1]}`)
-                                .then(response => response.json())
-                                .then(json => {
-                                    const noteData = json.data;
-
-                                    /* FORMATTING */
-                                    let created = new Date(noteData.dateAdded);
-                                    created = created.toJSON().slice(0, 10).split('/').reverse().join('-');
-
-                                    notesInner.innerHTML += `
-                                <div class="note collapsedNote">
-                                    <div class="noteHeader">
-                                        <p>${noteData.action}</p>
-                                        <p>${created}</p>
-                                    </div>
-                                    <div class="noteBody">
-                                        ${noteData.comments}
-                                    </div>
-                                </div>`
-                                    console.log(noteData);
-                                })
-                        });
-                    }
-                    else{
-                        notesInner.innerHTML = '<p>No notes on entity, why not create one?</p>';
-                    }
-                })
-            // detailsPane.innerHTML += '<div id="backButton">back</div>';
-            // const backButton = document.querySelector('#backButton');
-
-            // backButton.addEventListener('click', (event) => {
-            //     console.log(event);
-            //     scrollToPanel(document.querySelector('#screen-search'));
-            //     this.parentNode.removeChild(this);
-            // })
+            getNotes(entity, findEntity);
+            
+            const backButton = document.querySelector('#backButton');
+            backButton.style.display = 'block';
+            backButton.addEventListener('click', (event) => {
+                console.log(event);
+                scrollToPanel(document.querySelector('#screen-search'));
+                const backButton = document.querySelector('#backButton');
+                backButton.style.display = 'none';
+            });
         });
+}
+
+function getNotes(entity, findEntity) {
+    fetch(`${tokens[2]}query/NoteEntity?where=targetEntityID=${entity.id}&fields=note&BhRestToken=${tokens[1]}`)
+        .then(response => response.json())
+        .then(json => {
+            // console.log(json.data);
+            const notesArea = document.querySelector('#notesOuter');
+            notesArea.innerHTML += '<h3 id="notesTitle">Notes</h3><div id="notesInner"></div>';
+            if (json.data.length > 0) {
+                const noteIds = json.data.map(note => note.note.id).join(',');
+                console.error(noteIds);
+                // eslint-disable-next-line no-undef
+                fetch(`${tokens[2]}entity/Note/${noteIds}?fields=*&BhRestToken=${tokens[1]}`)
+                    .then(response => response.json())
+                    .then(json => {
+                        const notesInner = document.querySelector('#notesInner');
+                        notesInner.innerHTML = json.data
+                            .map(note => `<div class="note collapsedNote"><div class="noteHeader">
+                                        <p>${note.action}</p>
+                                        <p>${new Date(note.dateAdded).toJSON().slice(0, 10).split('/').reverse().join('-')}</p>
+                                    </div>
+                                    <div class="noteBody" style="display: none;">
+                                        ${note.comments}
+                                    </div>
+                                </div>`)
+                            .join('\n');
+                    });
+            }
+            else {
+                document.querySelector('#notesInner').innerHTML = '<p>No notes on entity, why not create one?</p>';
+            }
+            addCommentSection(notesArea, findEntity);
+        });
+}
+
+function addCommentSection(notesArea, refreshEntity) {
+    // eslint-disable-next-line no-undef
+    fetch(`${tokens[2]}settings/commentActionList,userId?BhRestToken=${tokens[1]}`)
+        .then(response => response.json())
+        .then(json => {
+            // const actions = 
+            notesArea.innerHTML += `<div id="notesInput">
+                    <form id="notesInputForm">
+                        <input type="text" id="comment" name="comment" placeholder="Notes go here">
+                        <select id="actionSelector"></select>
+                        <input type="hidden" id="userId" name="userId" value="${json.userId}">
+                        <input type="hidden" id="entityId" name="entityId" value="${refreshEntity.entityId}">
+                        <button type="submit">Submit</button>
+                    </form>
+                    </div>`;
+            const notesInput = document.querySelector('#notesInputForm');
+            notesInput.addEventListener('submit', (event) => {
+                submitNote(event, refreshEntity);
+            });
+            const actionSelector = document.querySelector('#actionSelector');
+            actionSelector.innerHTML = json.commentActionList
+                .map(action => `<option value="${action}">${action}</option>`)
+                .join('\n');
+        })
 }
 
 function scrollToPanel(panel) {
     const left = panel.offsetLeft;
     // eslint-disable-next-line no-undef
     screens.scroll(left, 0);
+}
+
+async function submitNote(event, refreshEntity) {
+    event.preventDefault();
+    const comment = document.querySelector("#comment").value;
+    const action = document.querySelector('#actionSelector').value;
+    const user = document.querySelector('#userId').value;
+    const entity = document.querySelector('#entityId').value;
+
+    console.log(comment);
+
+    fetch(`/gleecall.api/backend?comment=${comment}&action=${action}&userId=${user}&entityId=${entity}`)
+    .then(response => response.json())
+    .then(json => {
+        console.log(json);
+        showDetails(refreshEntity);
+    });
 }
