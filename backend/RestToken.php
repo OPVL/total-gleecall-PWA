@@ -49,8 +49,7 @@ class RestToken
             return json_encode("{ 'token':'" . $response['BhRestToken'] . "' }");
 
         // print_r($access);
-        $response['refresh_token'] = $access['refresh_token'];            return [];
-
+        $response['refresh_token'] = $access['refresh_token'];
 
         return $response;
     }

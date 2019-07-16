@@ -36,7 +36,7 @@ if (isset($_GET['refresh'])) {
     if (!$tokens['BhRestToken']) {
         setcookie("BhRestToken", "", 0, '/');
         setcookie("refresh_token", "", 0, '/');
-        die('invalid');
+        // die('invalid');
         return json_encode(tokens);
     }
 
