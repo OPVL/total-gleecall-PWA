@@ -11,7 +11,7 @@ const searchForm = document.querySelector('#searchBox');
 
 searchForm.addEventListener('submit', (event) => {
     console.log(event);
-    search(event);
+    triggerSearch(event);
 });
 
 function createGroups(collection, total) {
@@ -92,53 +92,19 @@ function auth() {
     }
 }
 
-function search(event) {
+function triggerSearch(event) {
     event.preventDefault();
+    if (!tokens[1]) {
+        console.log('RestToken invalid refreshing');
+        refresh(tokens[0]);
+    }
+
     const term = document.querySelector('#searchTerm').value;
     const searchPane = document.querySelector('#screen-search');
     searchPane.innerHTML = loadingSpinner;
     scrollToPanel(searchPane);
-    console.log(term);
 
-    // eslint-disable-next-line no-undef
-    fetch(`${tokens[2]}find?query=${term}&BhRestToken=${tokens[1]}`)
-        .then(response => response.json())
-        .then(json => {
-            console.log(json.data);
-            if (json.data.length < 1) {
-                searchPane.innerHTML = noResults;
-                return;
-            }
-            searchPane.innerHTML = handleResults(json.data);
-
-
-            json.data.forEach(entity => {
-                const elem = document.querySelector(`#E${entity.entityId}`);
-                elem.addEventListener('click', (event) => {
-                    console.log(`${event} -- ${entity}`);
-                    showDetails(entity);
-                }, false);
-            });
-            const coll = document.getElementsByClassName("collapsible");
-            coll[0].children.length
-            for (let i = 0; i < coll.length; i++) {
-                coll[i].addEventListener("click", function () {
-                    this.classList.toggle("active");
-                    const content = this.nextElementSibling;
-                    content.style.display = content.style.display == 'none' ? 'block' : 'none';
-                    // if (content.style.height) {
-                    //     content.style.height = null;
-                    // } else {
-                    //     content.style.height = (content.children.length * 117) + "px";
-                    // }
-                });
-            }
-            // let html = "";
-            // json.data.forEach(entity => {
-            //     html += `<div class="card">${entity.title}</div>`;
-            // });
-            // searchPane.innerHTML = html;
-        });
+    search(term, searchPane);
 }
 
 const loadingSpinner = `
@@ -150,6 +116,42 @@ const loadingSpinner = `
 </div>`;
 
 const noResults = `<strong>No Results Found</strong>`;
+
+function search(term, searchPane) {
+    console.log(term);
+    if (!term){
+        console.log(`search term is invalid? = "${term}"`);
+        searchPane.innerHTML = noResults;
+        return;
+    }
+    // eslint-disable-next-line no-undef
+    fetch(`${tokens[2]}find?query=${term}&BhRestToken=${tokens[1]}`)
+        .then(response => response.json())
+        .then(json => {
+            console.log(json.data);
+            if (json.data.length < 1) {
+                searchPane.innerHTML = noResults;
+                return;
+            }
+            searchPane.innerHTML = handleResults(json.data);
+            json.data.forEach(entity => {
+                const elem = document.querySelector(`#E${entity.entityId}`);
+                elem.addEventListener('click', (event) => {
+                    console.log(`${event} -- ${entity}`);
+                    showDetails(entity);
+                }, false);
+            });
+            const coll = document.getElementsByClassName("collapsible");
+            coll[0].children.length;
+            for (let i = 0; i < coll.length; i++) {
+                coll[i].addEventListener("click", function () {
+                    this.classList.toggle("active");
+                    const content = this.nextElementSibling;
+                    content.style.display = content.style.display == 'none' ? 'block' : 'none';
+                });
+            }
+        });
+}
 
 function showDetails(findEntity) {
     const fields = '*';
@@ -178,7 +180,7 @@ function getDetails(findEntity, fields, detailsPane) {
             </div>`;
 
             getNotes(entity, findEntity);
-            
+
             const backButton = document.querySelector('#backButton');
             backButton.style.display = 'block';
             backButton.addEventListener('click', (event) => {
@@ -216,8 +218,7 @@ function getNotes(entity, findEntity) {
                                 </div>`)
                             .join('\n');
                     });
-            }
-            else {
+            } else {
                 document.querySelector('#notesInner').innerHTML = '<p>No notes on entity, why not create one?</p>';
             }
             addCommentSection(notesArea, findEntity);
@@ -266,9 +267,34 @@ async function submitNote(event, refreshEntity) {
     console.log(comment);
 
     fetch(`/gleecall.api/backend?comment=${comment}&action=${action}&userId=${user}&entityId=${entity}`)
-    .then(response => response.json())
-    .then(json => {
-        console.log(json);
-        showDetails(refreshEntity);
-    });
+        .then(response => response.json())
+        .then(json => {
+            console.log(json);
+            showDetails(refreshEntity);
+        });
+}
+
+const searchTerm = getQueryParams(document.location.search);
+console.log(searchTerm.term);
+
+if (searchTerm.term){
+    search(searchTerm.term, document.querySelector('#screen-search'));
+    document.querySelector('#searchTerm').value = searchTerm.term;
+}
+
+// screens.addEventListener("scroll", pageTransition);
+// tester.addEventListener('click', swoop);
+
+function getQueryParams(qs) {
+    qs = qs.split('+').join(' ');
+
+    var params = {},
+        tokens,
+        re = /[?&]?([^=]+)=([^&]*)/g;
+
+    while (tokens = re.exec(qs)) {
+        params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+
+    return params;
 }
