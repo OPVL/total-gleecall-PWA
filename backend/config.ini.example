@@ -1,0 +1,10 @@
+OAUTH_URL = 'https://auth.bullhornstaffing.com/oauth';
+CLIENT_ID = 'CLIENT_ID';
+CLIENT_SECRET = 'CLIENT_SECRET';
+USERNAME = 'username'; // Fallback API username
+PASSWORD = 'password'; // Fallback API password
+
+DB_HOST = '127.0.0.1';
+DB_PORT = '3306';
+DB_USER = 'username';
+DB_PASS = 'password';
