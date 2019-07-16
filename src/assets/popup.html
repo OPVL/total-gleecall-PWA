@@ -163,9 +163,11 @@
             border-radius: 3px;
             display: none;
         }
-        #error b{
+
+        #error b {
             font-size: 14px;
         }
+
         #error i {
             font-size: 10px;
             color: dimgray;
@@ -211,16 +213,24 @@
             });
             const json = await res.json();
 
-            if (json.error){
+            if (json.error) {
                 screen.innerHTML = defScreen;
                 console.error(json.error);
                 const error = document.querySelector('#error');
-                error.innerHTML = `<b>${json.error}</b><br>Let's try that again.<br><i>If this issue persists, please contact an Admin.</i>`;
+                error.innerHTML =
+                    `<b>${json.error}</b><br>Let's try that again.<br><i>If this issue persists, please contact an Admin.</i>`;
                 error.style.display = 'block';
+
+                const loginForm = document.querySelector('#login');
+
+                loginForm.addEventListener('submit', (event) => {
+                    login(event);
+                });
                 return;
             }
             window.opener.postMessage(json, "http://localhost");
-            screen.innerHTML = '<h2>Success!</h2><p style="font-size: 10px; color: #ccc;">This window will automatically close itself.</p>';
+            screen.innerHTML =
+                '<h2>Success!</h2><p style="font-size: 10px; color: #ccc;">This window will automatically close itself.</p>';
             setTimeout(window.close, 1000);
 
         };
