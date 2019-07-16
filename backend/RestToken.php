@@ -25,7 +25,9 @@ class RestToken
         $access = AccessToken::get(false, $auth, null);
 
         if (!$auth || !$access) {
-            return [];
+            Log::fatal("AuthCode or AccessToken invalid. Die >> Session");
+            $arr['error'] = 'Credentials Error';
+            die(json_encode($arr));
         }
         // return NULL;
         $url = "https://rest.bullhornstaffing.com/rest-services/login?version=*&access_token=" . $access['access_token'];
@@ -47,7 +49,8 @@ class RestToken
             return json_encode("{ 'token':'" . $response['BhRestToken'] . "' }");
 
         // print_r($access);
-        $response['refresh_token'] = $access['refresh_token'];
+        $response['refresh_token'] = $access['refresh_token'];            return [];
+
 
         return $response;
     }
