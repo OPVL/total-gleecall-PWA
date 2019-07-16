@@ -150,6 +150,26 @@
                 transform: rotate(450deg);
             }
         }
+
+        #error {
+            /* display: none; */
+            background: #fccbd1;
+            border: rgb(255, 161, 161) 1px solid;
+            margin: 12px;
+            max-width: 300px;
+            padding: 5px;
+            text-align: center;
+            font-size: 10px;
+            border-radius: 3px;
+            display: none;
+        }
+        #error b{
+            font-size: 14px;
+        }
+        #error i {
+            font-size: 10px;
+            color: dimgray;
+        }
     </style>
 </head>
 
@@ -157,6 +177,7 @@
     <div id="screen">
         <h2>Login to Bullhorn</h2>
         <form id="login">
+            <div id="error"></div>
             <div class="input">
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username">
@@ -189,6 +210,15 @@
                 mode: 'cors'
             });
             const json = await res.json();
+
+            if (json.error){
+                screen.innerHTML = defScreen;
+                console.error(json.error);
+                const error = document.querySelector('#error');
+                error.innerHTML = `<b>${json.error}</b><br>Let's try that again.<br><i>If this issue persists, please contact an Admin.</i>`;
+                error.style.display = 'block';
+                return;
+            }
             window.opener.postMessage(json, "http://localhost");
             screen.innerHTML = '<h2>Success!</h2><p style="font-size: 10px; color: #ccc;">This window will automatically close itself.</p>';
             setTimeout(window.close, 1000);
@@ -197,6 +227,20 @@
         loginForm.addEventListener('submit', (event) => {
             login(event);
         });
+
+        const defScreen = `<h2>Login to Bullhorn</h2>
+        <form id="login">
+            <div id="error"></div>
+            <div class="input">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username">
+            </div>
+            <div class="input">
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password">
+            </div>
+            <button type="submit">Continue</button>
+        </form>`;
     </script>
 
 </body>
