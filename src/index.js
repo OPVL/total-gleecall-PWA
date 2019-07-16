@@ -96,6 +96,7 @@ function triggerSearch(event) {
     event.preventDefault();
     if (!tokens[1]) {
         console.log('RestToken invalid refreshing');
+        // eslint-disable-next-line no-undef
         refresh(tokens[0]);
     }
 
