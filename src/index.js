@@ -101,8 +101,6 @@ function triggerSearch(event) {
 
     const term = document.querySelector('#searchTerm').value;
     const searchPane = document.querySelector('#screen-search');
-    searchPane.innerHTML = loadingSpinner;
-    scrollToPanel(searchPane);
 
     search(term, searchPane);
 }
@@ -118,6 +116,9 @@ const loadingSpinner = `
 const noResults = `<strong>No Results Found</strong>`;
 
 function search(term, searchPane) {
+    searchPane.innerHTML = loadingSpinner;
+    scrollToPanel(searchPane);
+    
     console.log(term);
     if (!term){
         console.log(`search term is invalid? = "${term}"`);
