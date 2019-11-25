@@ -20,12 +20,12 @@ if (isset($_GET['username']) && isset($_GET['password'])) {
     }
 
     header('Content-Type: application/json');
-    echo json_encode($tokens);
 
     // die($tokens);
     setcookie("BhRestToken", $tokens['BhRestToken'], time() + 600, '/');
     setcookie("refresh_token", $tokens['refresh_token'], time() + 60 * 60 * 24 * 30, '/');
     setcookie("restUrl", $tokens['restUrl'], time() + 60 * 60 * 24 * 30, '/');
+    echo json_encode($tokens);
 
     // header("Location: /gleesons/" . ($_POST['origin'] . $_POST['term']) ?? 'dashboard');
 }

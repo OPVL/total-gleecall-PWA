@@ -33,6 +33,7 @@ class AuthCode
     public static function get(array $credentials = null)
     {
         $url = AuthCode::buildUrl(parse_ini_file('config.ini'), $credentials);
+        // die($url);
         try {
             $ch = curl_init($url);
             curl_setopt_array($ch, AuthCode::$params);

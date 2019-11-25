@@ -21,6 +21,7 @@ class RestToken
      */
     public static function get(bool $justToken, array $credentials = null)
     {
+        // print_r($credentials);
         $auth = AuthCode::get($credentials);
         $access = AccessToken::get(false, $auth, null);
 
